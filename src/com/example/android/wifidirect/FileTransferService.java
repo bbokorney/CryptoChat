@@ -27,6 +27,7 @@ public class FileTransferService extends IntentService {
     public static final String EXTRAS_FILE_PATH = "file_url";
     public static final String EXTRAS_GROUP_OWNER_ADDRESS = "go_host";
     public static final String EXTRAS_GROUP_OWNER_PORT = "go_port";
+	//public static final String EXTRAS_PASSWORD = "password";
 
     public FileTransferService(String name) {
         super(name);
@@ -59,12 +60,12 @@ public class FileTransferService extends IntentService {
                 Log.d(WiFiDirectActivity.TAG, "Client socket - " + socket.isConnected());
                 OutputStream stream = socket.getOutputStream();
                 ContentResolver cr = context.getContentResolver();
-                InputStream is = null;
-                //File image = new File(fileUri);
-                //byte[] unencryptedImage = new byte[image.length];
-                //byte[] encrpytedImage = null;
-                //EncryptionFactor ef = new EncryptionFactor(password.toCharArray());
+                InputStream is = null;                
                 try {
+					//File image = new File(fileUri);
+                    //byte[] unencryptedImage = new byte[image.length];
+                    //byte[] encrpytedImage = null;
+                    //EncryptionFactor ef = new EncryptionFactor(password.toCharArray());
                     is = cr.openInputStream(Uri.parse(fileUri));
                     //is.read(unencryptedImage);
                     //encryptedImage = ef.encrypt(unencryptedImage);
