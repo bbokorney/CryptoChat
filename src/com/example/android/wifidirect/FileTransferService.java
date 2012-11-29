@@ -63,6 +63,8 @@ public class FileTransferService extends IntentService {
                 InputStream is = null;
                 //byte[] unencryptedImage = null;
                 //byte[] encrpytedImage = null;
+				// SharedPreferences settings = DeviceDetailFragment.getPreferences();
+                // String password = settings.getPassword("password", "default");
                 //EncryptionFactor ef = new EncryptionFactor(password.toCharArray());
                 try {				                                      
                     is = cr.openInputStream(Uri.parse(fileUri));                                        
