@@ -171,6 +171,11 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         mContentView.findViewById(R.id.btn_connect).setVisibility(View.GONE);
     }
 
+	
+	// public static SharedPreferences getPreferences() {
+		// Context con;
+		// return con.getSharedPreferences("Preferences", 0);
+	// }
     /**
      * Updates the UI with device data
      * 
@@ -236,6 +241,8 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                 if (!dirs.exists())
                     dirs.mkdirs();
                 f.createNewFile();
+				// SharedPreferences settings = getPreferences();
+                // String password = settings.getPassword("password", "default");
 
                 Log.d(WiFiDirectActivity.TAG, "server: copying files " + f.toString());
                 InputStream inputstream = client.getInputStream();
