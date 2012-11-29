@@ -60,20 +60,18 @@ public class FileTransferService extends IntentService {
                 Log.d(WiFiDirectActivity.TAG, "Client socket - " + socket.isConnected());
                 OutputStream stream = socket.getOutputStream();
                 ContentResolver cr = context.getContentResolver();
-                InputStream is = null;                
-                try {
-					//File image = new File(fileUri);
-                    //byte[] unencryptedImage = new byte[image.length];
-                    //byte[] encrpytedImage = null;
-                    //EncryptionFactor ef = new EncryptionFactor(password.toCharArray());
-                    is = cr.openInputStream(Uri.parse(fileUri));
-                    //is.read(unencryptedImage);
-                    //encryptedImage = ef.encrypt(unencryptedImage);
-                    // ByteArrayInputStream bais = new ByteArrayInputStream(encryptedImage);
-                    
+                InputStream is = null;
+                //byte[] unencryptedImage = null;
+                //byte[] encrpytedImage = null;
+                //EncryptionFactor ef = new EncryptionFactor(password.toCharArray());
+                try {				                                      
+                    is = cr.openInputStream(Uri.parse(fileUri));                                        
                 } catch (FileNotFoundException e) {
                     Log.d(WiFiDirectActivity.TAG, e.toString());
                 }
+                //unencryptedImage = ef.makeByteArray(is);
+                //encryptedImage = ef.encrypt(unencryptedImage);
+                // ByteArrayInputStream bais = new ByteArrayInputStream(encryptedImage);
                 DeviceDetailFragment.copyFile(is, stream);
                 //DeviceDetailFragment.copyFile(bais, stream);
                 Log.d(WiFiDirectActivity.TAG, "Client: Data written");
