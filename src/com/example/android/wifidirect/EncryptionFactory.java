@@ -1,7 +1,14 @@
 package com.example.android.wifidirect;
 
-import javax.crypto.spec.*;
-import javax.crypto.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.PBEParameterSpec;
 
 public class EncryptionFactory {
 	public PBEKeySpec pbeKeySpec;
@@ -38,5 +45,17 @@ public class EncryptionFactory {
 		Cipher pbeDecryptCipher = Cipher.getInstance("PBEWithMD5AndDES");
 		pbeDecryptCipher.init(Cipher.DECRYPT_MODE, pbeKey, pbeParamSpec);
 		return pbeDecryptCipher.doFinal(ciphertext);
+	}
+	
+	public static byte[] makeByteArray(InputStream input) throws IOException
+	{
+	    byte[] buffer = new byte[8192];
+	    int bytesRead;
+	    ByteArrayOutputStream output = new ByteArrayOutputStream();
+	    while ((bytesRead = input.read(buffer)) != -1)
+	    {
+	        output.write(buffer, 0, bytesRead);
+	    }
+	    return output.toByteArray();
 	}
 }
