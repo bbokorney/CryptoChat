@@ -1,16 +1,11 @@
 package com.example.android.wifidirect;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import javax.crypto.spec.*;
+import javax.crypto.*;
+import java.io.*;
 
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.spec.PBEParameterSpec;
-
-public class EncryptionFactory {
+public class EncryptionFactory 
+{
 	public PBEKeySpec pbeKeySpec;
 	public PBEParameterSpec pbeParamSpec;
 	public SecretKeyFactory keyFac;
@@ -21,10 +16,10 @@ public class EncryptionFactory {
 	public SecretKey pbeKey;
 	public Cipher pbeEncryptCipher;
 
-	public EncryptionFactory(char[] password) {
+	public EncryptionFactory(String password) {
 	try {
 		pbeParamSpec = new PBEParameterSpec(salt, iterationCount);
-		pbeKeySpec = new PBEKeySpec(password, salt, iterationCount);
+		pbeKeySpec = new PBEKeySpec(password.toCharArray(), salt, iterationCount);
 		
 		keyFac = SecretKeyFactory.getInstance("PBEWithMD5AndDES");
 		pbeKey = keyFac.generateSecret(pbeKeySpec);
@@ -34,17 +29,22 @@ public class EncryptionFactory {
 		pbeEncryptCipher.init(Cipher.ENCRYPT_MODE, pbeKey, pbeParamSpec);
 	} catch(Exception e) {
 		System.out.println(e.getMessage());
+		System.out.println(e.toString());
 	}
 	}
 
-	public byte[] encrypt(byte[] cleartext) throws Exception {
-		return pbeEncryptCipher.doFinal(cleartext);
+	public InputStream encrypt(InputStream is) throws Exception {
+		byte[] bytes = makeByteArray(is);
+		bytes = pbeEncryptCipher.doFinal(bytes);
+		return new ByteArrayInputStream(bytes);
 	}
 	
-	public byte[] decrypt(byte[] ciphertext) throws Exception {
+	public InputStream decrypt(InputStream is) throws Exception {
 		Cipher pbeDecryptCipher = Cipher.getInstance("PBEWithMD5AndDES");
 		pbeDecryptCipher.init(Cipher.DECRYPT_MODE, pbeKey, pbeParamSpec);
-		return pbeDecryptCipher.doFinal(ciphertext);
+		byte[] bytes = makeByteArray(is);
+		bytes = pbeDecryptCipher.doFinal(bytes); 
+		return new ByteArrayInputStream(bytes);
 	}
 	
 	public static byte[] makeByteArray(InputStream input) throws IOException
