@@ -61,24 +61,30 @@ public class FileTransferService extends IntentService {
                 Log.d(WiFiDirectActivity.TAG, "Client socket - " + socket.isConnected());
                 OutputStream stream = socket.getOutputStream();
                 ContentResolver cr = context.getContentResolver();
+<<<<<<< HEAD
                 InputStream is = null;
                 //byte[] unencryptedImage = null;
                 //byte[] encrpytedImage = null;
                 String password = intent.getExtras().getString("password");
                 EncryptionFactory ef = new EncryptionFactory(password.toCharArray());
+=======
+                InputStream is = null;                
+                // String password = DeviceDetailFragment.getPreferences().getPassword("password", "default");
+                //EncryptionFactory ef = new EncryptionFactory(password);
+>>>>>>> ee11d7950e554271cf925e98e9aa536931168500
                 try {				                                      
                     is = cr.openInputStream(Uri.parse(fileUri));                                        
                 } catch (FileNotFoundException e) {
                     Log.d(WiFiDirectActivity.TAG, e.toString());
-                }
-                //unencryptedImage = ef.makeByteArray(is);
-                //encryptedImage = ef.encrypt(unencryptedImage);
-                // ByteArrayInputStream bais = new ByteArrayInputStream(encryptedImage);
-                DeviceDetailFragment.copyFile(is, stream);
-                //DeviceDetailFragment.copyFile(bais, stream);
+                }                
+                //is = ef.encrypt(is);
+                DeviceDetailFragment.copyFile(is, stream);                
                 Log.d(WiFiDirectActivity.TAG, "Client: Data written");
             } catch (IOException e) {
                 Log.e(WiFiDirectActivity.TAG, e.getMessage());
+//            } catch(javax.crypto.BadPaddingException e) {
+//            	Log.e(WiFiDirectActivity.TAG, e.getMessage());
+//            	//alert the user they have the wrong password somehow
             } finally {
                 if (socket != null) {
                     if (socket.isConnected()) {
