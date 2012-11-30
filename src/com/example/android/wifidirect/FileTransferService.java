@@ -6,6 +6,7 @@ import android.app.IntentService;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
 
@@ -63,9 +64,8 @@ public class FileTransferService extends IntentService {
                 InputStream is = null;
                 //byte[] unencryptedImage = null;
                 //byte[] encrpytedImage = null;
-				// SharedPreferences settings = DeviceDetailFragment.getPreferences();
-                // String password = settings.getPassword("password", "default");
-                //EncryptionFactor ef = new EncryptionFactor(password.toCharArray());
+                String password = intent.getExtras().getString("password");
+                EncryptionFactory ef = new EncryptionFactory(password.toCharArray());
                 try {				                                      
                     is = cr.openInputStream(Uri.parse(fileUri));                                        
                 } catch (FileNotFoundException e) {

@@ -16,11 +16,14 @@
 
 package com.example.android.wifidirect;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
@@ -33,10 +36,14 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.android.wifidirect.DeviceListFragment.DeviceActionListener;
+
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -111,15 +118,50 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                         intent.setType("image/*");
                         startActivityForResult(intent, CHOOSE_FILE_RESULT_CODE);
+                        
+                        
                     }
                 });
 
         return mContentView;
     }
 
+    public void onCreateDialog(Bundle savedInstanceState) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        // Get the layout inflater
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        // Inflate and set the layout for the dialog
+        // Pass null as the parent view because its going in the dialog layout
+        View textEntryView = inflater.inflate(R.layout.password, null);     
+        final AlertDialog passwordDialog = builder.create();
+        Button ok = (Button) textEntryView.findViewById(R.id.comfirm);
+        Button cancel = (Button) textEntryView.findViewById(R.id.Cancel);
+        final EditText pText = (EditText) textEntryView.findViewById(R.id.pText);
+        final SharedPreferences settings = this.getActivity().getSharedPreferences("Preferences", 0);
+        ok.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                
+                
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putString("password", pText.getText().toString());
+                editor.commit();
+                passwordDialog.dismiss();
+            }
+        });
+        cancel.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                passwordDialog.dismiss();
+            }
+        });
+        passwordDialog.show();
+               
+    }
+    
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
+        SharedPreferences settings = this.getActivity().getSharedPreferences("Preferences", 0);
         // User has picked an image. Transfer it to group owner i.e peer using
         // FileTransferService.
         Uri uri = data.getData();
@@ -127,6 +169,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         statusText.setText("Sending: " + uri);
         Log.d(WiFiDirectActivity.TAG, "Intent----------- " + uri);
         Intent serviceIntent = new Intent(getActivity(), FileTransferService.class);
+        serviceIntent.putExtra("password", settings.getString("password", "password"));
         serviceIntent.setAction(FileTransferService.ACTION_SEND_FILE);
         serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_PATH, uri.toString());
         serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS,
@@ -172,11 +215,6 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         mContentView.findViewById(R.id.btn_connect).setVisibility(View.GONE);
     }
 
-	
-	// public static SharedPreferences getPreferences() {
-		// Context con;
-		// return con.getSharedPreferences("Preferences", 0);
-	// }
     /**
      * Updates the UI with device data
      * 
