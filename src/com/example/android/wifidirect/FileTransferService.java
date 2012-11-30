@@ -49,7 +49,6 @@ public class FileTransferService extends IntentService {
         if (intent.getAction().equals(ACTION_SEND_FILE)) {
             String fileUri = intent.getExtras().getString(EXTRAS_FILE_PATH);
             String host = intent.getExtras().getString(EXTRAS_GROUP_OWNER_ADDRESS);
-            //String password = intent.getExtras().getString(EXTRAS_PASSWORD);
             Socket socket = new Socket();
             int port = intent.getExtras().getInt(EXTRAS_GROUP_OWNER_PORT);
 
@@ -61,30 +60,21 @@ public class FileTransferService extends IntentService {
                 Log.d(WiFiDirectActivity.TAG, "Client socket - " + socket.isConnected());
                 OutputStream stream = socket.getOutputStream();
                 ContentResolver cr = context.getContentResolver();
-<<<<<<< HEAD
-                InputStream is = null;
-                //byte[] unencryptedImage = null;
-                //byte[] encrpytedImage = null;
-                String password = intent.getExtras().getString("password");
-                EncryptionFactory ef = new EncryptionFactory(password.toCharArray());
-=======
                 InputStream is = null;                
-                // String password = DeviceDetailFragment.getPreferences().getPassword("password", "default");
-                //EncryptionFactory ef = new EncryptionFactory(password);
->>>>>>> ee11d7950e554271cf925e98e9aa536931168500
+                String password = intent.getExtras().getString("password");
+                EncryptionFactory ef = new EncryptionFactory(password);
                 try {				                                      
                     is = cr.openInputStream(Uri.parse(fileUri));                                        
                 } catch (FileNotFoundException e) {
                     Log.d(WiFiDirectActivity.TAG, e.toString());
                 }                
-                //is = ef.encrypt(is);
+                is = ef.encrypt(is);
                 DeviceDetailFragment.copyFile(is, stream);                
                 Log.d(WiFiDirectActivity.TAG, "Client: Data written");
             } catch (IOException e) {
                 Log.e(WiFiDirectActivity.TAG, e.getMessage());
-//            } catch(javax.crypto.BadPaddingException e) {
-//            	Log.e(WiFiDirectActivity.TAG, e.getMessage());
-//            	//alert the user they have the wrong password somehow
+            } catch(Exception e) {
+            	Log.e(WiFiDirectActivity.TAG, e.getMessage());
             } finally {
                 if (socket != null) {
                     if (socket.isConnected()) {

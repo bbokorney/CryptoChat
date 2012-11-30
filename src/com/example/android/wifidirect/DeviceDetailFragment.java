@@ -278,19 +278,24 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                 File dirs = new File(f.getParent());
                 if (!dirs.exists())
                     dirs.mkdirs();
-                f.createNewFile();				
-                // String password = getPreferences().getPassword("password", "default");
-                //EncryptionFactory ef = new EncryptionFactory(password);
+                f.createNewFile();
+                SharedPreferences settings = context.getSharedPreferences("Preferences", 0);
+                String password = settings.getString("password", "default");
+                EncryptionFactory ef = new EncryptionFactory(password);
                 Log.d(WiFiDirectActivity.TAG, "server: copying files " + f.toString());
                 InputStream inputstream = client.getInputStream();
 				//decrypt file
-                //inputstream = ef.decrypt(inputstream);
+                inputstream = ef.decrypt(inputstream);
                 copyFile(inputstream, new FileOutputStream(f));
                 serverSocket.close();
                 return f.getAbsolutePath();
             } catch (IOException e) {
                 Log.e(WiFiDirectActivity.TAG, e.getMessage());
                 return null;
+            } catch(Exception e)  {
+            	Log.e(WiFiDirectActivity.TAG, e.getMessage());
+            	//alert user they typed the wrong password in
+            	return null;
             }
         }
 
