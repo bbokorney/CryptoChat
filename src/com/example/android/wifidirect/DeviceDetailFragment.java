@@ -132,7 +132,6 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS,
                 info.groupOwnerAddress.getHostAddress());
         serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8988);
-		//serviceIntent.putExtra(FileTransferService.EXTRAS_PASSWORD, password);
         getActivity().startService(serviceIntent);
     }
 
@@ -241,19 +240,14 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                 File dirs = new File(f.getParent());
                 if (!dirs.exists())
                     dirs.mkdirs();
-                f.createNewFile();
-				// SharedPreferences settings = getPreferences();
-                // String password = settings.getPassword("password", "default");
-
+                f.createNewFile();				
+                // String password = getPreferences().getPassword("password", "default");
+                //EncryptionFactory ef = new EncryptionFactory(password);
                 Log.d(WiFiDirectActivity.TAG, "server: copying files " + f.toString());
                 InputStream inputstream = client.getInputStream();
-				//decrypt file 
-                //EncryptionFactor ef = new EncryptionFactory(password.toCharArray());
-                //byte[] encryptedImage = ef.makeByteArray(inputstream);
-                //byte[] decoded = ef.decrypt(encryptedImage);
-                // ByteArrayInputStream bais = new ByteArrayInputStream(encryptedImage);
+				//decrypt file
+                //inputstream = ef.decrypt(inputstream);
                 copyFile(inputstream, new FileOutputStream(f));
-                //copyFile(bais, new FileOutputStream(f));
                 serverSocket.close();
                 return f.getAbsolutePath();
             } catch (IOException e) {
