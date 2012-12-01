@@ -72,10 +72,10 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
+        onCreateDialog(savedInstanceState);
         mContentView = inflater.inflate(R.layout.device_detail, null);
         mContentView.findViewById(R.id.btn_connect).setOnClickListener(new View.OnClickListener() {
-
+            
             @Override
             public void onClick(View v) {
                 WifiP2pConfig config = new WifiP2pConfig();
@@ -132,7 +132,9 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         LayoutInflater inflater = getActivity().getLayoutInflater();
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
-        View textEntryView = inflater.inflate(R.layout.password, null);     
+        
+        View textEntryView = inflater.inflate(R.layout.password, null);
+        builder.setView(textEntryView);
         final AlertDialog passwordDialog = builder.create();
         Button ok = (Button) textEntryView.findViewById(R.id.comfirm);
         Button cancel = (Button) textEntryView.findViewById(R.id.Cancel);
