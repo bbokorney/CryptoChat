@@ -53,6 +53,8 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import javax.crypto.BadPaddingException;
+
 /**
  * A fragment that manages a particular peer and allows interaction with device
  * i.e. setting up network connection and transferring data.
@@ -294,9 +296,11 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
             } catch (IOException e) {
                 Log.e(WiFiDirectActivity.TAG, e.getMessage());
                 return null;
-            } catch(Exception e)  {
+            } catch(BadPaddingException e) {
             	Log.e(WiFiDirectActivity.TAG, e.getMessage());
-            	//alert user they typed the wrong password in
+            	return "err_encryption";
+            } catch(Exception e)  {
+            	Log.e(WiFiDirectActivity.TAG, e.getMessage());            	
             	return null;
             }
         }
@@ -308,7 +312,11 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         @Override
         protected void onPostExecute(String result) {
             if (result != null) {
-                statusText.setText("File copied - " + result);
+                if(result.equals("err_encryption")) {
+                	statusText.setText("Encryption error: differing passwords.");
+                	return;
+                }
+            	statusText.setText("File copied - " + result);
                 Intent intent = new Intent();
                 intent.setAction(android.content.Intent.ACTION_VIEW);
                 intent.setDataAndType(Uri.parse("file://" + result), "image/*");
